@@ -10,6 +10,7 @@
 | Vivi / AvatarSample_E VRM | VRoid / pixiv | CC0-1.0 |
 | FirstPersonHand.glb | 从 Vivi 右手派生 | CC0-1.0 |
 | Quaternius 动画库 | Quaternius | CC0-1.0 |
+| Mood sounds | yumeFriend generated | CC0-1.0 |
 
 ## 依赖
 
