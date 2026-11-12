@@ -22,6 +22,7 @@ from backend.api import approvals as approvals_api
 from backend.api import life as life_api
 from backend.api import live2d as live2d_api
 from backend.api import live2d_models as live2d_models_api
+from backend.api import live2d_runtime as live2d_runtime_api
 from backend.api import logs as logs_api
 from backend.api import portraits as portraits_api
 from backend.api import portrait_packs as portrait_packs_api
@@ -306,6 +307,7 @@ def create_app() -> FastAPI:
     app.include_router(life_api.router)
     app.include_router(live2d_api.router)
     app.include_router(live2d_models_api.router)
+    app.include_router(live2d_runtime_api.router)
     app.include_router(logs_api.router)
     app.include_router(memories_api.router)
     app.include_router(messages_api.router)

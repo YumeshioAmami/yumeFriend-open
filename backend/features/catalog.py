@@ -251,7 +251,7 @@ FEATURES: tuple[FeatureSpec, ...] = (
         category="界面",
         api_patterns=(
             r"^/api/friends/[^/]+/live2d(?:/|$)",
-            r"^/api/live2d/models(?:/|$)",
+            r"^/api/live2d/(?:models|runtime)(?:/|$)",
         ),
         ui_entries=("immersive", "call"),
     ),

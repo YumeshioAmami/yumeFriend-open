@@ -8,7 +8,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Application, Ticker } from 'pixi.js'
-import { Live2DModel } from 'pixi-live2d-display/cubism4'
 import {
   loadLive2DPresets,
   resolveMoodPreset,
@@ -18,10 +17,10 @@ import {
   type Live2DModelSettings,
   type Live2DPresetData,
 } from './live2dPresets'
+import { Live2DRuntimeMissingError, loadLive2DRuntime } from './live2dRuntime'
 
 // 不主动压到 60；让 requestAnimationFrame 跟显示器刷新（60/120/144Hz）。
 Ticker.shared.maxFPS = 0
-Live2DModel.registerTicker(Ticker)
 
 // 与后端 `MOOD_KIND_RULES` 保持同一张表：情绪标签 → 种类 + exp3 候选。
 const MOOD_KIND_RULES: Array<[RegExp, string, string[]]> = [
@@ -662,9 +661,11 @@ export default function Live2DCharacter({
   const modelSettingsRef = useRef<Live2DModelSettings | null>(settingsOverride ?? null)
   const modelExpressionsRef = useRef<Live2DExpressionDef[]>(expressionsOverride ?? [])
   const [ready, setReady] = useState(false)
+  const [loadError, setLoadError] = useState('')
   const [textSpeaking, setTextSpeaking] = useState(false)
   const [settingsEpoch, setSettingsEpoch] = useState(0)
   const [settingsRefresh, setSettingsRefresh] = useState(0)
+  const [runtimeEpoch, setRuntimeEpoch] = useState(0)
 
   useEffect(() => {
     let alive = true
@@ -692,6 +693,12 @@ export default function Live2DCharacter({
     const onSettingsChanged = () => setSettingsRefresh((value) => value + 1)
     window.addEventListener('yf-live2d-settings-changed', onSettingsChanged)
     return () => window.removeEventListener('yf-live2d-settings-changed', onSettingsChanged)
+  }, [])
+
+  useEffect(() => {
+    const onRuntimeChanged = () => setRuntimeEpoch((value) => value + 1)
+    window.addEventListener('yf-live2d-runtime-changed', onRuntimeChanged)
+    return () => window.removeEventListener('yf-live2d-runtime-changed', onRuntimeChanged)
   }, [])
 
   useEffect(() => {
@@ -757,7 +764,9 @@ export default function Live2DCharacter({
     let app: Application | null = null
 
     const boot = async () => {
+      setLoadError('')
       try {
+        const { Live2DModel } = await loadLive2DRuntime()
         app = new Application({
           backgroundAlpha: 0,
           antialias: true,
@@ -872,7 +881,14 @@ export default function Live2DCharacter({
         setReady(true)
       } catch (error) {
         console.error('[live2d] 加载失败', error)
-        if (!disposed) onUnavailable?.()
+        if (!disposed) {
+          setLoadError(
+            error instanceof Live2DRuntimeMissingError
+              ? '需要先下载 Live2D 运行时'
+              : 'Live2D 加载失败',
+          )
+          onUnavailable?.()
+        }
       }
     }
     void boot()
@@ -892,13 +908,15 @@ export default function Live2DCharacter({
       }
       setReady(false)
     }
-  }, [friendId, modelId, onUnavailable])
+  }, [friendId, modelId, onUnavailable, runtimeEpoch])
 
   return (
     <div ref={hostRef} className={`relative h-full w-full ${className}`}>
       {!ready && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <span className="text-[11px] text-white/35">正在加载 Live2D…</span>
+          <span className={`text-[11px] ${loadError ? 'text-amber-200/75' : 'text-white/35'}`}>
+            {loadError || '正在加载 Live2D…'}
+          </span>
         </div>
       )}
     </div>

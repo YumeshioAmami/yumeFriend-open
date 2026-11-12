@@ -76,6 +76,24 @@ export interface Live2DModelSummary {
   is_default: boolean
 }
 
+export interface Live2DRuntimeStatus {
+  available: boolean
+  installed: boolean
+  source: 'installed' | 'bundled' | null
+  size: number | null
+  sha256: string | null
+  official_download_page: string
+  license_urls: {
+    proprietary: string
+    open: string
+  }
+}
+
+export interface Live2DRuntimeProgress {
+  received: number
+  total: number
+}
+
 export interface PortraitPack {
   id: string
   name: string
@@ -1993,6 +2011,70 @@ export const api = {
     file: File,
   ): Promise<{ ok: boolean; model: { id: string; name: string; model_file: string } }> =>
     upload('/live2d/models/import', file),
+
+  getLive2DRuntimeStatus: (): Promise<Live2DRuntimeStatus> =>
+    request<Live2DRuntimeStatus>('/live2d/runtime/status'),
+
+  downloadLive2DRuntime: async (
+    onProgress: (progress: Live2DRuntimeProgress) => void,
+  ): Promise<{ size: number; sha256: string }> => {
+    const response = await fetch('/api/live2d/runtime/download', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accepted_license: true }),
+    })
+    if (!response.ok) {
+      const body = (await response.json().catch(() => null)) as {
+        detail?: string
+        error?: { message?: string }
+      } | null
+      throw new Error(body?.detail ?? body?.error?.message ?? `HTTP ${response.status}`)
+    }
+    if (!response.body) throw new Error('浏览器没有返回下载流')
+
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ''
+    let result: { size: number; sha256: string } | null = null
+
+    const handleLine = (line: string) => {
+      if (!line.trim()) return
+      const event = JSON.parse(line) as {
+        type?: string
+        received?: number
+        total?: number
+        size?: number
+        sha256?: string
+        message?: string
+      }
+      if (event.type === 'progress') {
+        onProgress({
+          received: Number(event.received ?? 0),
+          total: Number(event.total ?? 0),
+        })
+      } else if (event.type === 'done') {
+        result = {
+          size: Number(event.size ?? 0),
+          sha256: String(event.sha256 ?? ''),
+        }
+      } else if (event.type === 'error') {
+        throw new Error(event.message || 'Live2D 运行时下载失败')
+      }
+    }
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop() ?? ''
+      for (const line of lines) handleLine(line)
+    }
+    buffer += decoder.decode()
+    if (buffer.trim()) handleLine(buffer)
+    if (!result) throw new Error('下载结束，但没有收到完成确认')
+    return result
+  },
 
   getFeatures: (): Promise<{ ok: boolean; features: FeatureInfo[] }> =>
     request<{ ok: boolean; features: FeatureInfo[] }>('/features'),

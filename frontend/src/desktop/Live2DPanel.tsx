@@ -4,6 +4,7 @@ import Live2DCharacter from '../shared/Live2DCharacter'
 import {
   api,
   type Live2DModelSummary,
+  type Live2DRuntimeStatus,
 } from '../shared/api'
 import type {
   Live2DLabel,
@@ -39,6 +40,12 @@ const BASIC_PARAMS: { id: string; label: string }[] = [
   { id: 'ParamHairSide', label: '侧发' },
   { id: 'ParamHairBack', label: '后发' },
 ]
+
+const LIVE2D_PROPRIETARY_LICENSE_URL =
+  'https://www.live2d.com/eula/live2d-proprietary-software-license-agreement_en.html'
+const LIVE2D_OPEN_LICENSE_URL =
+  'https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html'
+const LIVE2D_DOWNLOAD_PAGE_URL = 'https://www.live2d.com/en/sdk/download/web/'
 
 function cloneSettings(settings: Live2DModelSettings): Live2DModelSettings {
   return JSON.parse(JSON.stringify(settings)) as Live2DModelSettings
@@ -89,7 +96,24 @@ export default function Live2DPanel() {
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
   const [testSpeaking, setTestSpeaking] = useState(false)
+  const [runtime, setRuntime] = useState<Live2DRuntimeStatus | null>(null)
+  const [runtimeAgreed, setRuntimeAgreed] = useState(false)
+  const [runtimeBusy, setRuntimeBusy] = useState(false)
+  const [runtimeError, setRuntimeError] = useState('')
+  const [runtimeProgress, setRuntimeProgress] = useState({ received: 0, total: 0 })
   const importInputRef = useRef<HTMLInputElement | null>(null)
+
+  const refreshRuntime = useCallback(async () => {
+    try {
+      setRuntime(await api.getLive2DRuntimeStatus())
+    } catch (error) {
+      setRuntimeError(`读取 Live2D 运行时状态失败：${String(error)}`)
+    }
+  }, [])
+
+  useEffect(() => {
+    void refreshRuntime()
+  }, [refreshRuntime])
 
   useEffect(() => {
     void api
@@ -268,9 +292,139 @@ export default function Live2DPanel() {
     [],
   )
 
+  const downloadRuntime = useCallback(async () => {
+    if (!runtimeAgreed || runtimeBusy) return
+    setRuntimeBusy(true)
+    setRuntimeError('')
+    setRuntimeProgress({ received: 0, total: 0 })
+    try {
+      const result = await api.downloadLive2DRuntime((progress) => {
+        setRuntimeProgress(progress)
+      })
+      await refreshRuntime()
+      setMessage(`Live2D 运行时已就绪（${(result.size / 1024).toFixed(0)} KB）`)
+      window.dispatchEvent(new CustomEvent('yf-live2d-runtime-changed'))
+    } catch (error) {
+      setRuntimeError(`下载失败：${String(error)}`)
+    } finally {
+      setRuntimeBusy(false)
+    }
+  }, [refreshRuntime, runtimeAgreed, runtimeBusy])
+
+  const runtimePercent = runtimeBusy
+    ? Math.min(
+        96,
+        Math.round(
+          (runtimeProgress.received /
+            Math.max(runtimeProgress.total || 240 * 1024, 1)) *
+            100,
+        ),
+      )
+    : runtime?.available
+      ? 100
+      : 0
+
   return (
     <section className="grid h-full min-h-0 grid-cols-[150px_minmax(230px,1fr)_minmax(290px,1.2fr)] gap-2.5">
       <aside className="min-h-0 space-y-1.5 overflow-y-auto pr-1">
+        <div className="rounded-xl border border-line/60 bg-surface/40 p-2">
+          <div className="flex items-center justify-between gap-1">
+            <h3 className="text-[12px] font-medium text-ink">Live2D 运行时</h3>
+            <span
+              className={`rounded-full px-1.5 py-0.5 text-[9.5px] ${
+                runtime?.available
+                  ? 'bg-emerald-400/12 text-emerald-300'
+                  : 'bg-amber-400/12 text-amber-200'
+              }`}
+            >
+              {runtime ? (runtime.available ? '已就绪' : '未安装') : '检查中'}
+            </span>
+          </div>
+          <p className="mt-1 text-[10px] leading-relaxed text-faint">
+            浏览器渲染所需的官方 Cubism Core。下载只从 Live2D 官方地址获取，不随应用分发。
+          </p>
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => void downloadRuntime()}
+              disabled={!runtimeAgreed || runtimeBusy}
+              className="rounded-full bg-accent px-2.5 py-1 text-[10px] font-medium text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {runtimeBusy
+                ? '正在下载…'
+                : runtime?.available
+                  ? '重新下载并校验'
+                  : '下载运行时'}
+            </button>
+            <a
+              href={runtime?.license_urls.proprietary ?? LIVE2D_PROPRIETARY_LICENSE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="text-[10px] text-accent/90 underline decoration-accent/30 underline-offset-2 hover:text-accent"
+            >
+              专有软件许可
+            </a>
+            <a
+              href={runtime?.license_urls.open ?? LIVE2D_OPEN_LICENSE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="text-[10px] text-accent/90 underline decoration-accent/30 underline-offset-2 hover:text-accent"
+            >
+              开放软件许可
+            </a>
+          </div>
+          <label className="mt-1.5 flex items-start gap-1.5 text-[9.5px] leading-relaxed text-muted">
+            <input
+              type="checkbox"
+              checked={runtimeAgreed}
+              onChange={(event) => setRuntimeAgreed(event.target.checked)}
+              className="mt-0.5 h-3 w-3 shrink-0 accent-[var(--accent)]"
+            />
+            <span>我已阅读并同意上述两份 Live2D 官方许可协议。</span>
+          </label>
+          <p className="mt-1 text-[9.5px] leading-relaxed text-amber-100/65">
+            下载此运行时即表示你同意 Live2D 官方许可协议。
+          </p>
+          {runtimeBusy && (
+            <div className="mt-1.5">
+              <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+                <div
+                  className="h-full rounded-full bg-accent transition-[width] duration-150"
+                  style={{ width: `${runtimePercent}%` }}
+                />
+              </div>
+              <p className="mt-1 flex justify-between text-[9px] text-faint">
+                <span>{runtimePercent}%</span>
+                <span>
+                  {(runtimeProgress.received / 1024).toFixed(0)} KB
+                  {runtimeProgress.total > 0
+                    ? ` / ${(runtimeProgress.total / 1024).toFixed(0)} KB`
+                    : ''}
+                </span>
+              </p>
+            </div>
+          )}
+          {runtimeError && (
+            <p className="mt-1 rounded-md bg-red-400/8 px-1.5 py-1 text-[9.5px] leading-relaxed text-red-200/85">
+              {runtimeError}
+            </p>
+          )}
+          {runtime?.available && (
+            <p className="mt-1 text-[9.5px] text-faint">
+              {runtime.size ? `${(runtime.size / 1024).toFixed(0)} KB · ` : ''}
+              Live2D 会在预览和沉浸模式中自动启用。
+            </p>
+          )}
+          <a
+            href={runtime?.official_download_page ?? LIVE2D_DOWNLOAD_PAGE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-1 inline-block text-[9.5px] text-faint underline decoration-line-strong/40 underline-offset-2 hover:text-accent"
+          >
+            打开 Live2D 官方下载页
+          </a>
+        </div>
+
         <div>
           <h3 className="text-[12px] font-medium text-ink">Live2D 模型</h3>
           <p className="mt-0.5 text-[10.5px] leading-relaxed text-faint">
