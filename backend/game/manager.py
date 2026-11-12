@@ -47,6 +47,7 @@ from backend.services import (
     blueprint_store,
     game_store,
     memory_service,
+    minecraft_version_service,
     message_service,
     proactive_service,
     schedule_service,
@@ -603,6 +604,7 @@ class GameManager:
         # D276：常态模式是会话状态，不是任务。
         self._mode = DEFAULT_GAME_MODE
         self._mode_supported = True
+        self._version_compat: dict[str, Any] | None = None
         self._mode_applied = False
         self._mode_paused_until = 0.0
         self._mode_switching = False
@@ -970,6 +972,9 @@ class GameManager:
         data["blueprint_job"] = _compact_value(self._blueprint_job)
         data["incident"] = _compact_value(self._active_incident)
         data["reflexes"] = self._load_reflex_config()
+        data["version_compat"] = (
+            dict(self._version_compat) if self._version_compat is not None else None
+        )
         return data
 
     def recent_event_dicts(self, limit: int = 50) -> list[dict[str, Any]]:
@@ -997,8 +1002,37 @@ class GameManager:
     ) -> dict[str, Any]:
         if self.active:
             raise RuntimeError("同一时间只允许一局（D250）")
+        requested = dict(config or {})
+        version_resolution = None
+        adapter_env: dict[str, str] | None = None
+        if game_kind == "minecraft":
+            version_resolution = await asyncio.to_thread(
+                minecraft_version_service.resolve_for_server,
+                str(requested.get("host") or "127.0.0.1"),
+                int(requested.get("port") or 25565),
+                requested_version=str(
+                    requested.get("minecraft_version")
+                    or requested.get("version")
+                    or "auto"
+                ),
+            )
+            requested.update(
+                {
+                    "version": version_resolution.pack_version,
+                    "server_version": version_resolution.server_version,
+                    "server_protocol": version_resolution.server_protocol,
+                    "pack_protocol": version_resolution.pack_protocol,
+                    "allow_version_fallback": version_resolution.mode
+                    == "experimental",
+                    "compat_mode": version_resolution.mode,
+                    "compat_warning": version_resolution.warning,
+                }
+            )
+            adapter_env = {
+                "YF_MC_DATA_PACKAGE": version_resolution.package_path,
+            }
         session_config = {
-            **dict(config or {}),
+            **requested,
             "reflexes": self._load_reflex_config(),
         }
 
@@ -1025,6 +1059,7 @@ class GameManager:
             session = await service.start(
                 friend_id=friend_id,
                 game_kind=game_kind,
+                env=adapter_env,
                 config=session_config,
                 on_session_ready=persist_session,
             )
@@ -1036,6 +1071,9 @@ class GameManager:
         self.session_id = session.id
         self.friend_id = friend_id
         self.game_kind = game_kind
+        self._version_compat = (
+            version_resolution.as_dict() if version_resolution is not None else None
+        )
         self._recent_events = []
         self._plan = ""
         self._plan_steps = []
@@ -1190,6 +1228,7 @@ class GameManager:
             self._blueprint_job = None
             self._blueprint_previews = {}
             self._last_blueprint_preview = None
+            self._version_compat = None
             self._spawn(self._summarize(session_id))
 
     async def shutdown(self) -> None:

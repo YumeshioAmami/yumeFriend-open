@@ -67,7 +67,7 @@ if ($LASTEXITCODE -ne 0) {
     if ($LASTEXITCODE -ne 0) { Write-Host "✗ 装 PyInstaller 失败" -ForegroundColor Red; exit 1 }
 }
 
-Write-Host "②.5 准备游戏适配器（Node + 裁剪 minecraft-data）…" -ForegroundColor Cyan
+Write-Host "②.5 准备游戏适配器（Node + 剥离 minecraft-data 版本数据）…" -ForegroundColor Cyan
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     Write-Host "✗ 打包需要 Node（Q43）：先装 Node 或把它放进 PATH" -ForegroundColor Red
     exit 1
@@ -80,7 +80,7 @@ if (-not (Test-Path (Join-Path $mc "node_modules\mineflayer"))) {
     Pop-Location
     if ($LASTEXITCODE -ne 0) { Write-Host "✗ 适配器依赖安装失败" -ForegroundColor Red; exit 1 }
 }
-& $python -X utf8 (Join-Path $root "scripts\prune_minecraft_data.py") --apply
+& $python -X utf8 (Join-Path $root "scripts\prune_minecraft_data.py") --empty --apply
 if ($LASTEXITCODE -ne 0) { Write-Host "✗ 裁剪 minecraft-data 失败" -ForegroundColor Red; exit 1 }
 
 if ($Clean) {

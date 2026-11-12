@@ -82,6 +82,7 @@ class GameService:
         friend_id: str,
         game_kind: str,
         command: Sequence[str] | None = None,
+        env: Mapping[str, str] | None = None,
         config: Mapping[str, Any] | None = None,
         on_session_ready: Callable[[GameSession], Awaitable[None]] | None = None,
     ) -> GameSession:
@@ -92,7 +93,7 @@ class GameService:
 
         if command is None:
             command = registry.command_for(game_kind)
-        process = AdapterProcess(command)
+        process = AdapterProcess(command, env=env)
         session = GameSession(
             id=str(uuid.uuid4()),
             friend_id=friend_id,

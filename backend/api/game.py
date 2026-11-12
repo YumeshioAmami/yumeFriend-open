@@ -8,7 +8,7 @@ from fastapi import APIRouter, Body
 
 from backend.db import session_scope
 from backend.game.manager import get_manager
-from backend.services import blueprint_store, skill_store
+from backend.services import blueprint_store, minecraft_version_service, skill_store
 
 router = APIRouter(prefix="/api/game", tags=["game"])
 
@@ -16,6 +16,36 @@ router = APIRouter(prefix="/api/game", tags=["game"])
 @router.get("/status")
 async def status() -> dict[str, Any]:
     return get_manager().status()
+
+
+@router.get("/minecraft/versions")
+def minecraft_versions(force: bool = False) -> dict[str, Any]:
+    return minecraft_version_service.status(force=force)
+
+
+@router.post("/minecraft/versions/{version}/download")
+def download_minecraft_version(version: str) -> dict[str, Any]:
+    return minecraft_version_service.start_download(version)
+
+
+@router.get("/minecraft/download-status")
+def minecraft_download_status(version: str = "") -> dict[str, Any]:
+    return minecraft_version_service.download_status(version or None)
+
+
+@router.delete("/minecraft/versions/{version}")
+def delete_minecraft_version(version: str) -> dict[str, Any]:
+    return minecraft_version_service.delete_version(version)
+
+
+@router.post("/minecraft/probe")
+def probe_minecraft(body: dict = Body(...)) -> dict[str, Any]:
+    from backend.services.minecraft_probe import ping_server
+
+    return ping_server(
+        str(body.get("host") or "127.0.0.1"),
+        int(body.get("port") or 25565),
+    )
 
 
 @router.post("/start")

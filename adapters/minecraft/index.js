@@ -13,6 +13,32 @@
  *   --mc-host 127.0.0.1 --mc-port 25565 --username Xiyin_ --heartbeat 5
  */
 
+const fs = require('fs');
+const path = require('path');
+const Module = require('module');
+
+// 版本数据包由主程序按需下载到 user_data；这里把它挂成 `minecraft-data`。
+// mineflayer / minecraft-protocol / 本适配器都会命中同一个实例。
+const MC_DATA_PACKAGE = String(process.env.YF_MC_DATA_PACKAGE || '').trim();
+if (MC_DATA_PACKAGE) {
+  const packageJson = path.join(MC_DATA_PACKAGE, 'package.json');
+  if (!fs.existsSync(packageJson)) {
+    throw new Error(`找不到 Minecraft 版本数据包：${MC_DATA_PACKAGE}`);
+  }
+  const originalLoad = Module._load;
+  Module._load = function (request, parent, isMain) {
+    if (
+      request === 'minecraft-data' ||
+      String(request).startsWith('minecraft-data/')
+    ) {
+      const suffix = String(request).slice('minecraft-data'.length);
+      const target = suffix ? path.join(MC_DATA_PACKAGE, suffix) : MC_DATA_PACKAGE;
+      return originalLoad.call(this, target, parent, isMain);
+    }
+    return originalLoad.apply(this, arguments);
+  };
+}
+
 const http = require('http');
 const { URL } = require('url');
 const { WebSocketServer, WebSocket } = require('ws');
@@ -21,7 +47,11 @@ const mcProtocol = require('minecraft-protocol');
 const minecraftData = require('minecraft-data');
 const { pathfinder, Movements, goals } = require('mineflayer-pathfinder');
 const Vec3 = require('vec3');
-const { resolveVersionName, supportedVersions } = require('./lib/version');
+const {
+  resolveVersionName,
+  protocolsFor,
+  supportedVersions,
+} = require('./lib/version');
 const {
   isHostile,
   isCloseEnough,
@@ -2644,9 +2674,16 @@ async function startSession(config) {
   const host = String((config && config.host) || cli.mcHost);
   const port = Number((config && config.port) || cli.mcPort);
   const username = String((config && config.username) || cli.username);
+  const packVersion = String((config && config.version) || '').trim();
 
   state.status = 'starting';
-  state.config = { host, port, username };
+  state.config = {
+    host,
+    port,
+    username,
+    version: packVersion || null,
+    compat_mode: String((config && config.compat_mode) || 'exact'),
+  };
   state.reflexConfig = normalizeReflexConfig((config && config.reflexes) || {});
   state.reflexLastRun = {};
   state.activeMoveTaskId = null;
@@ -2667,7 +2704,22 @@ async function startSession(config) {
     );
   }
 
-  if (versionInfo.resolved && !SUPPORTED_VERSIONS.includes(versionInfo.resolved)) {
+  const exactVersion = Boolean(
+    versionInfo.resolved && SUPPORTED_VERSIONS.includes(versionInfo.resolved)
+  );
+  const sameProtocol = Boolean(
+    versionInfo.protocol != null &&
+      SUPPORTED_VERSIONS.some((version) =>
+        protocolsFor(version).includes(versionInfo.protocol)
+      )
+  );
+  const allowFallback = Boolean(config && config.allow_version_fallback);
+  if (
+    versionInfo.resolved &&
+    !exactVersion &&
+    !sameProtocol &&
+    !allowFallback
+  ) {
     state.status = 'idle';
     throw httpError(
       409,
@@ -2683,7 +2735,9 @@ async function startSession(config) {
     port,
     username,
     auth: 'offline',
-    version: (config && config.version) || false,
+    // 同协议版本用数据包版本发送；跨协议实验也发送数据包版本，由服务器决定
+    // 是否接受（例如 ViaVersion）。没有选包时保持自动探测。
+    version: packVersion || false,
   });
   state.bot = bot;
   state.lastHealth = 20;
@@ -2736,7 +2790,12 @@ async function startSession(config) {
     username: bot.username,
     plugins: describePlugins(state.plugins),
   });
-  return { session_id: state.sessionId, state: state.status, version: bot.version };
+  return {
+    session_id: state.sessionId,
+    state: state.status,
+    version: bot.version,
+    compat_mode: state.config.compat_mode,
+  };
 }
 
 async function stopSession() {

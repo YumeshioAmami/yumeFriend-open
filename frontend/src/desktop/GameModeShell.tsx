@@ -44,6 +44,7 @@ import {
 import { ACCENT } from '../shared/ui'
 import type { StreamState } from '../shared/useChat'
 import LogWindow from './LogWindow'
+import MinecraftVersionsCard from './MinecraftVersionsCard'
 
 type TabId =
   | 'overview'
@@ -179,7 +180,12 @@ const REFLEX_LABELS: Record<string, string> = {
 
 const CONNECTION_KEY = 'yumefriend.game.connection'
 
-function readConnection(): { host: string; port: string; username: string } {
+function readConnection(): {
+  host: string
+  port: string
+  username: string
+  version: string
+} {
   try {
     const raw = localStorage.getItem(CONNECTION_KEY)
     if (raw) {
@@ -188,17 +194,23 @@ function readConnection(): { host: string; port: string; username: string } {
         host: String(data.host || '127.0.0.1'),
         port: String(data.port || '51856'),
         username: String(data.username || 'Xiyin_'),
+        version: String(data.version || 'auto'),
       }
     }
   } catch {
     // 本地偏好坏了就用默认值，不影响进游戏
   }
-  return { host: '127.0.0.1', port: '51856', username: 'Xiyin_' }
+  return { host: '127.0.0.1', port: '51856', username: 'Xiyin_', version: 'auto' }
 }
 
-function saveConnection(host: string, port: string, username: string): void {
+function saveConnection(
+  host: string,
+  port: string,
+  username: string,
+  version: string,
+): void {
   try {
-    localStorage.setItem(CONNECTION_KEY, JSON.stringify({ host, port, username }))
+    localStorage.setItem(CONNECTION_KEY, JSON.stringify({ host, port, username, version }))
   } catch {
     // 存不了下次就重新填，不是错误
   }
@@ -792,13 +804,19 @@ export default function GameModeShell({
     setError(null)
     setNote(null)
     try {
-      saveConnection(connection.host, connection.port, connection.username)
+      saveConnection(
+        connection.host,
+        connection.port,
+        connection.username,
+        connection.version,
+      )
       await api.gameStart({
         friend_id: friend.id,
         game_kind: 'minecraft',
         host: connection.host.trim(),
         port: Number(connection.port),
         username: connection.username.trim(),
+        version: connection.version,
       })
       await refreshStatus()
       await loadCheatConfig()
@@ -1418,6 +1436,12 @@ export default function GameModeShell({
                     </EmptyHint>
                   ) : mine ? (
                     <div className="space-y-3">
+                      {status?.version_compat?.warning && (
+                        <div className="rounded-xl border border-amber-400/25 bg-amber-400/8 px-3 py-2 text-[10.5px] leading-relaxed text-amber-100/85">
+                          <p className="font-medium">实验性版本兼容</p>
+                          <p className="mt-0.5">{status.version_compat.warning}</p>
+                        </div>
+                      )}
                       <div className="grid gap-2 sm:grid-cols-2">
                         <Metric label="会话" value={status?.state ?? 'running'} />
                         <Metric
@@ -1489,6 +1513,14 @@ export default function GameModeShell({
                           />
                         </label>
                       </div>
+                      <MinecraftVersionsCard
+                        host={connection.host}
+                        port={connection.port}
+                        value={connection.version}
+                        onChange={(version) =>
+                          setConnection((prev) => ({ ...prev, version }))
+                        }
+                      />
                       <button
                         type="button"
                         onClick={() => void start()}

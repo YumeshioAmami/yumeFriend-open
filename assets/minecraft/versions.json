@@ -1,0 +1,448 @@
+{
+  "schema": 1,
+  "minecraft_data_version": "3.117.0",
+  "mineflayer_version": "4.39.0",
+  "generated_at": "2026-11-12T10:38:41.394293+00:00",
+  "versions": [
+    {
+      "version": "26.1",
+      "protocol": 775,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-26.1.zip",
+      "sha256": "ab88d176689deba410b66c285d18d71160e2c038e9d17b5a2caa3303181a01a0",
+      "size": 1415214,
+      "tier": "stable"
+    },
+    {
+      "version": "1.21.11",
+      "protocol": 774,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.21.11.zip",
+      "sha256": "2394b7df45ef2800e570eed7ef327a28e69f578ef54b9d7f22d6bb970c9d4c6a",
+      "size": 1409711,
+      "tier": "stable"
+    },
+    {
+      "version": "1.21.10",
+      "protocol": 773,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.21.10.zip",
+      "sha256": "87c96227801580472581a2948c662698a631fc68aa3c8d9fcb1938e1c6f1320c",
+      "size": 1400554,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.21.9",
+      "protocol": 773,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.21.9.zip",
+      "sha256": "8204dfba3fb68cff7b988aba324224cb7f146dee1940b4e97ee13111ad50d68c",
+      "size": 1400552,
+      "tier": "stable"
+    },
+    {
+      "version": "1.21.8",
+      "protocol": 772,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.21.8.zip",
+      "sha256": "f91ad3f5e843f8d984421163693b048e8c9bb2364fe28ead26246e7d3f006d02",
+      "size": 1669408,
+      "tier": "stable"
+    },
+    {
+      "version": "1.21.6",
+      "protocol": 771,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.21.6.zip",
+      "sha256": "37c0e326163164fc042a9ff44840ce33e45018844d6848b2fcb4a4492c77bc80",
+      "size": 1942854,
+      "tier": "stable"
+    },
+    {
+      "version": "1.21.5",
+      "protocol": 770,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.21.5.zip",
+      "sha256": "19f984c3935af7520f981c71c622768bf52aceb8166f55a93bd2229190beb97a",
+      "size": 1936414,
+      "tier": "stable"
+    },
+    {
+      "version": "1.21.4",
+      "protocol": 769,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.21.4.zip",
+      "sha256": "3a931735672dbfe05b96413f57ecbe613357fc1d7b8e4a957b504d9b1855bd69",
+      "size": 2166498,
+      "tier": "stable"
+    },
+    {
+      "version": "1.21.3",
+      "protocol": 768,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.21.3.zip",
+      "sha256": "5c0dcc7fee8fa64ac50eaf81353202d0956caade2e945091dfd3e463393b30d7",
+      "size": 1882148,
+      "tier": "stable"
+    },
+    {
+      "version": "1.21.1",
+      "protocol": 767,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.21.1.zip",
+      "sha256": "deb3f08d9c6bca4b0bf5b031ad702c05ebe2fa000c6eddc5f1f6f036e158ffa5",
+      "size": 1584151,
+      "tier": "stable"
+    },
+    {
+      "version": "1.21",
+      "protocol": 767,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.21.zip",
+      "sha256": "d3a86a0fa875d9bd94aabf3ab645ce176e50f877d0d38096825b5574078fe4be",
+      "size": 1584404,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.20.6",
+      "protocol": 766,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.20.6.zip",
+      "sha256": "38157df47d483289d281b53305be06d65f7d2ec1964c37cebf6773f94721ed68",
+      "size": 1629492,
+      "tier": "stable"
+    },
+    {
+      "version": "1.20.5",
+      "protocol": 766,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.20.5.zip",
+      "sha256": "bf58c752d5bedb273afd0ada58e76dd99654f997b3e9d8b8d51a244aa16c445f",
+      "size": 1629230,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.20.4",
+      "protocol": 765,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.20.4.zip",
+      "sha256": "40009bbd7c7bbbd805c46a1ab9dc3eb88bc25dba95242aa413302a1b1660f934",
+      "size": 1355944,
+      "tier": "stable"
+    },
+    {
+      "version": "1.20.3",
+      "protocol": 765,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.20.3.zip",
+      "sha256": "16b0bc5e73eccedb354b159d985a3c0b9855874726d0093c9bf854aa1ac3df89",
+      "size": 1304771,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.20.2",
+      "protocol": 764,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.20.2.zip",
+      "sha256": "f3295a55e54448f4c1b4e46fd0ea7d5667850d45fbc4f9c831c25d83afd26569",
+      "size": 1034019,
+      "tier": "stable"
+    },
+    {
+      "version": "1.20.1",
+      "protocol": 763,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.20.1.zip",
+      "sha256": "062c9227049609409e35b902f21affc7c6069589658048aea424439875a2e318",
+      "size": 808595,
+      "tier": "stable"
+    },
+    {
+      "version": "1.20",
+      "protocol": 763,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.20.zip",
+      "sha256": "4146b5e667540f7cc6a788b7ec7b8c36c33e84e0e2406e52cede16a183d1a5d9",
+      "size": 808594,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.19.4",
+      "protocol": 762,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.19.4.zip",
+      "sha256": "93be11792aa8340617e20a45d009fa15c141124de86bb0b6edf6a543932b92f5",
+      "size": 1237010,
+      "tier": "stable"
+    },
+    {
+      "version": "1.19.3",
+      "protocol": 761,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.19.3.zip",
+      "sha256": "5bc1622ddea0e7f3e2d8e93b5681e96d9a21829cda01d9e54f2b1e2e4c42620a",
+      "size": 1221906,
+      "tier": "stable"
+    },
+    {
+      "version": "1.19.2",
+      "protocol": 760,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.19.2.zip",
+      "sha256": "ddb883a604577d25095e8c1170595fa445601acd535a02ff155fd7d94f22251e",
+      "size": 994045,
+      "tier": "stable"
+    },
+    {
+      "version": "1.19",
+      "protocol": 759,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.19.zip",
+      "sha256": "dbf074427e03cde1ead449e13f67af4785852ee45ba734ddb765534432aed750",
+      "size": 774824,
+      "tier": "stable"
+    },
+    {
+      "version": "1.18.2",
+      "protocol": 758,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.18.2.zip",
+      "sha256": "abafa84393623ecb9d9057fcb264801e99fa606538f1d80ae3e378491589f2bf",
+      "size": 730878,
+      "tier": "stable"
+    },
+    {
+      "version": "1.18.1",
+      "protocol": 757,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.18.1.zip",
+      "sha256": "46164a88f8abc9089828069c34a57534fd30cafde087166453d467aae046b4dc",
+      "size": 704971,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.18",
+      "protocol": 757,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.18.zip",
+      "sha256": "8b5ecec22b153f8b7025c353b44a8c5cfcc53f27e7165dcbb83aa35866e83faf",
+      "size": 704730,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.17.1",
+      "protocol": 756,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.17.1.zip",
+      "sha256": "b85ba2acafe87c352081a17f51e2e7919b34e6a248f496fdf7ae755dce321172",
+      "size": 554904,
+      "tier": "stable"
+    },
+    {
+      "version": "1.17",
+      "protocol": 755,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.17.zip",
+      "sha256": "3db3cb0e1cb509781556e10cbdb914d413200749e2ad218740b20422b26229c4",
+      "size": 533585,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.16.5",
+      "protocol": 754,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.16.5.zip",
+      "sha256": "7045fce33ca3911b447a43742f86659af982a9b8177fe50c8a044bdf12d23a50",
+      "size": 414232,
+      "tier": "stable"
+    },
+    {
+      "version": "1.16.4",
+      "protocol": 754,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.16.4.zip",
+      "sha256": "245b87d53a1988fdb041631d9f76d417497c5f4ab6048da7c31417c1c6a63730",
+      "size": 413980,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.16.3",
+      "protocol": 753,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.16.3.zip",
+      "sha256": "388998cf514fbf005f8091432859166bcde3c46b1a529bf544ead96adb6cbb6e",
+      "size": 547960,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.16.2",
+      "protocol": 751,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.16.2.zip",
+      "sha256": "1a4d0d3a253bfd6ed0804a4dab5f7863f1f7fc07405803cd89d7ab69ebb643ea",
+      "size": 547721,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.16.1",
+      "protocol": 736,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.16.1.zip",
+      "sha256": "c6cea7251930b48475cb06256a5c58c94e41547bf71ee28d0082ddbc7e90aa91",
+      "size": 547716,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.16",
+      "protocol": 735,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.16.zip",
+      "sha256": "57a81642bf18e9c239e41383cfa735c22d92d40c057089832b5911fe75fca393",
+      "size": 547723,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.15.2",
+      "protocol": 578,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.15.2.zip",
+      "sha256": "23c2a7abfb986f2696c65a3b6bb9dba754eedb978100a5fcd9e584fa2f834188",
+      "size": 673429,
+      "tier": "stable"
+    },
+    {
+      "version": "1.15.1",
+      "protocol": 575,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.15.1.zip",
+      "sha256": "cb2ed94d03423790440495ca2fe98de56bce2ed3f200d3af36848d59cfeff5b3",
+      "size": 705006,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.15",
+      "protocol": 573,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.15.zip",
+      "sha256": "6d639fd0110612a0ff7ca0c01230c0be1bed11acd2f5afbbf78dfc9db5a90cc4",
+      "size": 673431,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.14.4",
+      "protocol": 498,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.14.4.zip",
+      "sha256": "22acbef883b58e799262cf0c7292febc4cbb01e0ef173a9abbf78a374bb7407e",
+      "size": 744254,
+      "tier": "stable"
+    },
+    {
+      "version": "1.14.3",
+      "protocol": 490,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.14.3.zip",
+      "sha256": "d91bac2e10428fe07302db6ce918ee74648f97f57b57d8c1b696d39be1840b2b",
+      "size": 775578,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.14.1",
+      "protocol": 480,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.14.1.zip",
+      "sha256": "614bf1ad3c0061ca848c28ab188c7be4fe088920b79a23b3c06e113857f04fe3",
+      "size": 775554,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.14",
+      "protocol": 477,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.14.zip",
+      "sha256": "728c533e2bb8f6554777217e823d1d8dc8e866f202b22d62a3359d1245cf90b6",
+      "size": 744254,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.13.2",
+      "protocol": 404,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.13.2.zip",
+      "sha256": "85d8365f8f2327d49229f2e9e5ba34fe2db4f63215546ef8c1bf64b82be57767",
+      "size": 465731,
+      "tier": "stable"
+    },
+    {
+      "version": "1.13.1",
+      "protocol": 401,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.13.1.zip",
+      "sha256": "d2d04bb65b4c9284ac6dcec2a6d5bb54a7ef5e32f2bc09b2b8b67910067ebe4e",
+      "size": 495782,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.13",
+      "protocol": 393,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.13.zip",
+      "sha256": "60fe16c02c3e299da4fbcca7865ac60136706f52a7f1e4ff1703a6b2ff244a98",
+      "size": 465722,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.12.2",
+      "protocol": 340,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.12.2.zip",
+      "sha256": "c0890406349da069b53f3d391a0763a51e0819ec7fabffde0c210d503b70e15c",
+      "size": 397034,
+      "tier": "stable"
+    },
+    {
+      "version": "1.12.1",
+      "protocol": 338,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.12.1.zip",
+      "sha256": "91c17cacbc2481438737f09f6fa2de59106bb06dcb574f4ba1b934a1328acca9",
+      "size": 392567,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.12",
+      "protocol": 335,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.12.zip",
+      "sha256": "feffa92ab581b26972cfbba8366397192264b0b422832e9a00fe243e59cd2972",
+      "size": 378163,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.11.2",
+      "protocol": 316,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.11.2.zip",
+      "sha256": "d72ed0f7193a13d7adfb76e55b463ba90b3d1a78e4fcd1ad373bc67b63bfcf7e",
+      "size": 310395,
+      "tier": "stable"
+    },
+    {
+      "version": "1.11",
+      "protocol": 315,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.11.zip",
+      "sha256": "cd6981098aaa3c65fc7e3f5510b7501d440524d4154c36c8d6e5b6f1a3a18ab0",
+      "size": 310387,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.10.2",
+      "protocol": 210,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.10.2.zip",
+      "sha256": "86bbbf2dd4ad2164486e55cd70a573a746a03f027785b4e835555717d6f985af",
+      "size": 332011,
+      "tier": "stable"
+    },
+    {
+      "version": "1.10.1",
+      "protocol": 210,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.10.1.zip",
+      "sha256": "cb8770fff130ab4ae6a7f27f88f33ffe2143481f47c33d109b3c54c70c1b9e92",
+      "size": 328281,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.10",
+      "protocol": 210,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.10.zip",
+      "sha256": "5a7c6d807c71d0cdba10da8b086ec9a9de9a5f153e25304c5fe1a1abb42cc784",
+      "size": 328032,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.9.4",
+      "protocol": 110,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.9.4.zip",
+      "sha256": "2219e9b1d877b0f8f671b3344261dce4626fd7403628345f832f14d541560397",
+      "size": 349255,
+      "tier": "stable"
+    },
+    {
+      "version": "1.9.2",
+      "protocol": 109,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.9.2.zip",
+      "sha256": "539b1b2be94158cdd59f21709b8fead8b64292f31a92cd8e1c49ee139c997436",
+      "size": 364025,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.9",
+      "protocol": 107,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.9.zip",
+      "sha256": "a7c0161ee707168fb48ffa2c53da2279d2724e6427654aa8e43ccc93359726a5",
+      "size": 332604,
+      "tier": "compatible"
+    },
+    {
+      "version": "1.8.8",
+      "protocol": 47,
+      "url": "https://www.yumeshio.cn/uploads/yumefriend/minecraft/minecraft-data-1.8.8.zip",
+      "sha256": "77a5220b994e1d13dbe81b34ac3d935c6c5c7af31ebc7390b1171ca6d77a095d",
+      "size": 328980,
+      "tier": "stable"
+    }
+  ]
+}

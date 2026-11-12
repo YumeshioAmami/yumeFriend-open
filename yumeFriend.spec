@@ -38,8 +38,9 @@ for _pkg in ("live2d", "glfw"):
     _live2d_binaries += _b
     _live2d_hidden += _h
 
-# v5.0（P4 / Q43）：游戏适配器 + Node 运行时（绿色版自带依赖）
-#   adapters/ 整个目录进包（minecraft-data 已在构建前裁剪到 8 个 Java 版本）
+# v5.0（P4 / Q43 / D477）：游戏适配器 + Node 运行时（绿色版自带依赖）
+#   adapters/ 整个目录进包；minecraft-data 只留共享协议代码，版本数据不进包，
+#   游戏启动前按服务器版本从资源站下载到 user_data/minecraft/versions/。
 #   node.exe 从构建机的 PATH 上取（~81 MB）→ _internal/node/node.exe
 _node = shutil.which("node")
 if not _node:

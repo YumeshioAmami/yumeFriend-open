@@ -639,6 +639,52 @@ export interface GameStatus {
   blueprint_job?: Record<string, unknown> | null
   reflexes?: { modes: Record<string, GameReflexMode> }
   recent_events?: GameEventView[]
+  version_compat?: GameVersionCompat | null
+}
+
+export interface GameVersionCompat {
+  pack_version: string
+  pack_protocol: number | null
+  server_version: string
+  server_protocol: number | null
+  mode: 'exact' | 'same_protocol' | 'experimental' | string
+  warning: string | null
+}
+
+export interface MinecraftVersionDownloadState {
+  state: 'idle' | 'downloading' | 'verifying' | 'extracting' | 'done' | 'error' | string
+  version: string | null
+  requested_version?: string
+  downloaded_bytes: number
+  total_bytes: number
+  percent: number
+  error: string | null
+  installed: boolean
+  updated_at: string
+}
+
+export interface MinecraftVersionInfo {
+  version: string
+  protocol: number | null
+  url: string
+  sha256: string
+  size: number
+  tier: 'stable' | 'compatible' | 'installed' | string
+  installed: boolean
+  installed_size: number | null
+}
+
+export interface MinecraftVersionStatus {
+  manifest_ok: boolean
+  manifest_source: string
+  manifest_error: string | null
+  minecraft_data_version: string
+  mineflayer_version: string
+  generated_at: string
+  latest_version: string | null
+  installed_count: number
+  versions: MinecraftVersionInfo[]
+  download: MinecraftVersionDownloadState
 }
 
 export interface UsageTotals {
@@ -750,6 +796,8 @@ export interface GameStartBody {
   host?: string
   port?: number
   username?: string
+  /** `auto` = 先探测服务器版本；也可强制指定资源包版本。 */
+  version?: string
 }
 
 export interface GameSnapshot {
@@ -1792,6 +1840,37 @@ export const api = {
 
   gameStart: (body: GameStartBody): Promise<GameStatus> =>
     request<GameStatus>('/game/start', { method: 'POST', body: JSON.stringify(body) }),
+
+  getMinecraftVersions: (force = false): Promise<MinecraftVersionStatus> =>
+    request<MinecraftVersionStatus>(`/game/minecraft/versions?force=${force ? 'true' : 'false'}`),
+
+  downloadMinecraftVersion: (version: string): Promise<MinecraftVersionDownloadState> =>
+    request<MinecraftVersionDownloadState>(
+      `/game/minecraft/versions/${encodeURIComponent(version)}/download`,
+      { method: 'POST' },
+    ),
+
+  minecraftVersionDownloadStatus: (
+    version?: string,
+  ): Promise<MinecraftVersionDownloadState> =>
+    request<MinecraftVersionDownloadState>(
+      `/game/minecraft/download-status${version ? `?version=${encodeURIComponent(version)}` : ''}`,
+    ),
+
+  deleteMinecraftVersion: (version: string): Promise<{ ok: boolean; deleted: boolean }> =>
+    request<{ ok: boolean; deleted: boolean }>(
+      `/game/minecraft/versions/${encodeURIComponent(version)}`,
+      { method: 'DELETE' },
+    ),
+
+  probeMinecraft: (
+    host: string,
+    port: number,
+  ): Promise<{ ok: boolean; server_version: string; protocol: number | null; latency_ms: number }> =>
+    request('/game/minecraft/probe', {
+      method: 'POST',
+      body: JSON.stringify({ host, port }),
+    }),
 
   gameStop: (): Promise<{ ok: boolean }> =>
     request<{ ok: boolean }>('/game/stop', { method: 'POST' }),

@@ -84,11 +84,18 @@ node index.js --port <适配器端口> --token <token>
 ## 打包（P4 / Q43）
 
 `npm install` 会带完整 `minecraft-data`（449.5 MB，含基岩 + 73 个版本）。
-打包前必须裁剪：
+**发布包不携带版本数据**。构建脚本只保留共享协议代码，游戏启动前按服务器
+版本从资源站下载单版本数据包到 `user_data/minecraft/versions/`（D476）：
 
 ```bash
-python scripts/prune_minecraft_data.py --apply
+python scripts/prune_minecraft_data.py --empty --apply
 ```
 
-只保留 8 个 Java 版本 + 必需的 `pc/common` / `bedrock/common`（`node_modules` 降到 ~74.5 MB）。
-`scripts/build_desktop.ps1` 已经自动做这一步。
+生成/发布单版本资源包见：
+
+```bash
+python scripts/build_minecraft_version_packs.py --write-seed
+python scripts/publish_minecraft_version_packs.py --verify-all
+```
+
+`scripts/build_desktop.ps1` 已经自动执行 `--empty --apply`。

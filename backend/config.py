@@ -60,6 +60,8 @@ PORTRAIT_DIR = USER_DATA_DIR / "portraits"  # 立绘（v2.2 / T2.2-3；一个朋
 PORTRAIT_PACK_DIR = USER_DATA_DIR / "portrait_packs"  # 全局立绘包（v7.43 / D441）
 BACKGROUND_DIR = USER_DATA_DIR / "backgrounds"  # 沉浸模式背景图（v2.2 / D107；一个朋友一张）
 SPACE_ASSET_DIR = USER_DATA_DIR / "space_assets"  # 小世界导入的 GLB（v7.23 / D376）
+MINECRAFT_DIR = USER_DATA_DIR / "minecraft"
+MINECRAFT_VERSION_DIR = MINECRAFT_DIR / "versions"  # 按需下载的 minecraft-data 版本包
 
 # v3.46（D231）：本地嵌入模型（ONNX / fastembed）的缓存目录。
 # 放**用户级目录**、不进 user_data —— 模型 ~92MB，塞进 user_data 会让每次打包 stash / 手工备份
@@ -107,6 +109,10 @@ UPDATE_PAGE_URL = (
     os.environ.get("YF_UPDATE_PAGE_URL")
     or "https://www.yumeshio.cn/uploads/yumefriend/"
 )
+MINECRAFT_VERSION_MANIFEST_URL = (
+    os.environ.get("YF_MINECRAFT_VERSION_MANIFEST_URL")
+    or "https://www.yumeshio.cn/uploads/yumefriend/minecraft/versions.json"
+)
 UPDATER_EXE_NAME = "yumeFriend-updater.exe"
 UPDATE_ALLOW_SOURCE = (os.environ.get("YF_UPDATE_ALLOW_SOURCE") or "").strip().lower() in {
     "1",
@@ -133,6 +139,7 @@ def ensure_dirs() -> None:
     AVATAR_DIR.mkdir(parents=True, exist_ok=True)
     AVATAR_MODEL_DIR.mkdir(parents=True, exist_ok=True)
     LIVE2D_DIR.mkdir(parents=True, exist_ok=True)
+    MINECRAFT_VERSION_DIR.mkdir(parents=True, exist_ok=True)
     LIVE2D_FRIEND_DIR.mkdir(parents=True, exist_ok=True)
     AUDIO_DIR.mkdir(parents=True, exist_ok=True)
     TTS_CACHE_DIR.mkdir(parents=True, exist_ok=True)
