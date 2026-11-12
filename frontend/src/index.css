@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+/*
+ * 语义色板（深夜模式的地基）：
+ *   组件里不写死 #faf7f2 / bg-white 这种具体色，而是用下面这些语义名。
+ *   浅色主题 = 和原来**一模一样**；深色主题只是把同一组名字换成"暖黑"一套。
+ *
+ * 设计理念不变（这是硬要求）：
+ *   · 底色仍然是**暖的**（#17140f，不是冷蓝黑）
+ *   · 强调色仍然只有「伴侣橙」，深色下只提亮一点点（暗底上要看得清）
+ *   · 玻璃质感、动效时长、克制度都不动
+ */
+@theme {
+  --color-page: #faf7f2;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f5f5f4;
+  --color-chip: #e7e5e4;
+  --color-ink: #0f172a;
+  --color-ink-soft: #334155;
+  --color-muted: #78716c;
+  --color-faint: #a8a29e;
+  --color-line: #e7e5e4;
+  --color-line-strong: #d6d3d1;
+  --color-avatar: #334155;
+  --color-scrim: #0f172a;
+  --color-accent: #c26947;
+}
+
+/* 深夜模式：同一组名字，换成暖黑一套 */
+[data-theme="dark"] {
+  --color-page: #17140f;
+  --color-surface: #241f19;
+  --color-surface-hover: #2e2820;
+  --color-chip: #3a322a;
+  --color-ink: #f3ece2;
+  --color-ink-soft: #ded4c7;
+  --color-muted: #a1968a;
+  --color-faint: #7f7469;
+  --color-line: #3a322a;
+  --color-line-strong: #4d433a;
+  --color-avatar: #4a4038;
+  --color-scrim: #000000;
+  --color-accent: #d0754d;
+  color-scheme: dark;
+}
+
+/*
+ * v5.1（D287）：全屏游戏模式。
+ *
+ * 不是"再来一套暗色主题"，而是**明显不同的场景**：暖深底、铜橙强调、
+ * 更沉的面板和更少的冷色。退出时由 React 删掉 data-game-mode，原主题原样回来。
+ */
+[data-game-mode="on"] {
+  --color-page: #17110c;
+  --color-surface: #241a12;
+  --color-surface-hover: #302318;
+  --color-chip: #3d2d1f;
+  --color-ink: #f5e8d7;
+  --color-ink-soft: #dfcbb4;
+  --color-muted: #b09a82;
+  --color-faint: #806d5a;
+  --color-line: #3d2f22;
+  --color-line-strong: #58452f;
+  --color-avatar: #4d3a28;
+  --color-scrim: #000000;
+  --color-accent: #d4864f;
+  color-scheme: dark;
+}
+
+[data-game-mode="on"] body {
+  background:
+    radial-gradient(60% 50% at 12% 0%, rgba(212, 134, 79, 0.12), transparent 72%),
+    radial-gradient(45% 45% at 100% 100%, rgba(93, 55, 31, 0.18), transparent 70%),
+    var(--color-page);
+}
+
+/*
+ * 视觉基调（借鉴旧版前端的设计语言，不含任何业务逻辑）：
+ *   - 背景是暖白 #faf7f2，不是纯白（微妙但有温度）
+ *   - 正文 slate-900，更沉更暖
+ *   - 强调色只有一个「伴侣橙」#c26947，且极其克制
+ *     （只用在这些地方：logo 点 / 选中条 / 在场光晕 / hover / 未读徽标）
+ *   - 装饰一律"几乎看不出"：滚动条 6px、入场 0.25s、呼吸 3.2s
+ */
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  /* 手机上**不许双指缩放整页**（用户实测：捏合缩放很蠢，而且页面一被缩放，
+     单指拖动就变成"拖整个界面"，立绘根本调不了）。
+     Android Chrome 会**忽略** viewport 里的 user-scalable=no，所以只能用手势层挡：
+     `pan-x pan-y` = 只允许平移，捏合（pinch-zoom）交给页面自己，浏览器不接管。
+     需要自己处理手势的元素（比如调整立绘时的立绘/整屏）再单独设 touch-action: none。 */
+  touch-action: pan-x pan-y;
+}
+
+body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Microsoft YaHei',
+    sans-serif;
+background: var(--color-page);
+color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.25s ease-out;
+}
+
+@keyframes presence-pulse {
+  0%,
+  100% {
+    opacity: 0.92;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 113, 108, 0.18);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 113, 108, 0.35);
+}
+
+/*
+ * 立绘的情绪动作（v2.2 / D111）
+ *   - 换表情时**一个短动作**：跳一下 / 抖一下 / 躲一下……看一眼就知道她心情变了
+ *   - 时长 0.32s（淡入）+ 0.9s（动作），缓出，看完就停（不做常驻循环，免得分心）
+ *   - 只动 transform / opacity：GPU 合成，不重排，缩放到 150% 也不掉帧
+ *   - 与 D110 的"拖动/缩放"是两层：用户调的那层在外，动作在内（互不打架）
+ */
+/* v3.6：立绘动作差分（D111）—— 两个原则：
+   ① **不再带 `portrait-in`（透明度 0→1）**：那是"闪一下"的来源（情绪一变就整张图淡入一次）；
+   ② **位移用相对单位（%）而不是像素**：用户的 `transform.scale` 能到 3 倍，像素位移会被一起放大
+      （22px → 66px），看着像"立绘突然变大"。用 % 就和缩放无关，任何倍率下动作幅度都一致。
+   缩放也一并去掉/压到极小 —— 那是最显眼的"变大"来源。 */
+@keyframes portrait-in {
+  from { opacity: 0; transform: translateY(2%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes portrait-happy {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-4%); }
+  62% { transform: translateY(-1%); }
+}
+@keyframes portrait-playful {
+  0%, 100% { transform: rotate(0) translateX(0); }
+  25% { transform: rotate(-3.5deg) translateX(-1.6%); }
+  55% { transform: rotate(3.5deg) translateX(1.6%); }
+  80% { transform: rotate(-1.5deg) translateX(-0.5%); }
+}
+@keyframes portrait-shy {
+  0%, 100% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(2.6%) scale(0.99); }
+  70% { transform: translateY(0.8%) scale(0.997); }
+}
+@keyframes portrait-angry {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  12% { transform: translateX(-2%) rotate(-1.2deg); }
+  28% { transform: translateX(1.8%) rotate(1.2deg); }
+  46% { transform: translateX(-1.4%) rotate(-0.8deg); }
+  64% { transform: translateX(1%) rotate(0.6deg); }
+  82% { transform: translateX(-0.5%); }
+}
+@keyframes portrait-surprised {
+  0%, 100% { transform: translateY(0) scale(1); }
+  22% { transform: translateY(-3.6%) scale(1.008); }
+  52% { transform: translateY(0.5%) scale(0.998); }
+}
+@keyframes portrait-sad {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  38% { transform: translateY(2.6%) rotate(-1.4deg); }
+  68% { transform: translateY(1.2%) rotate(0.9deg); }
+}
+@keyframes portrait-love {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-2.2%); }
+  60% { transform: translateY(-0.5%); }
+}
+@keyframes portrait-proud {
+  0%, 100% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-1.2%) scale(1.006); }
+}
+@keyframes portrait-puzzled {
+  0%, 100% { transform: rotate(0); }
+  35% { transform: rotate(-4deg); }
+  72% { transform: rotate(3deg); }
+}
+.mood-pop { animation: mood-pop 0.45s cubic-bezier(0.22, 0.8, 0.3, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .portrait-motion, .mood-pop { animation: none; }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "example_mod_bridge",
+  "name": "示例模组桥（缺模组时安全跳过）",
+  "version": "0.1.0",
+  "api_version": 1,
+  "requires_mod": "example_mod_item",
+  "actions": {
+    "mod_scan": {
+      "description": "示例模组交互（只有装了这个模组才可用）",
+      "effect": "interact",
+      "params": {}
+    }
+  }
+}

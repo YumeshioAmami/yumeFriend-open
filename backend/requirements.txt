@@ -1,0 +1,48 @@
+# yumeFriend 后端依赖（v1）
+# 不锁死版本：让 pip 解析（AGENTS.md §6）
+
+# Web 框架
+fastapi
+uvicorn[standard]
+pydantic
+# 收上传文件（头像 / 图片）要它，FastAPI 的 File/UploadFile 依赖
+python-multipart
+
+# 数据库
+sqlalchemy
+alembic
+
+# 定时任务
+apscheduler
+
+# HTTP 客户端 + LLM
+httpx
+openai
+# v5.0（D250）：游戏适配器的本地事件流（uvicorn[standard] 已带，这里显式声明）
+websockets
+
+# v3.46（D231）：本地嵌入（向量检索）—— ONNX 跑 BAAI/bge-small-zh-v1.5
+# 会带来 onnxruntime / tokenizers / numpy；模型权重在首次使用时下到 config.MODEL_CACHE_DIR
+fastembed
+
+# 日志
+loguru
+
+# v3.0（B12）：「手机端」那页的二维码（纯 Python + PIL，PIL 已经在下面了）
+qrcode[pil]
+
+# 桌面外壳（M5：托盘 + 窗口；D16 关窗 ≠ 退出）
+pywebview
+pystray
+pillow
+
+# v7.26（D424）：桌宠 Live2D 渲染。模型本体放 user_data，不进仓库；
+# 依赖缺失时桌宠会自动回退静态立绘。
+live2d-py
+glfw
+
+# 测试
+pytest
+pytest-asyncio
+pypdf
+python-docx

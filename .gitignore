@@ -1,0 +1,35 @@
+# user data
+user_data/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# frontend
+node_modules/
+dist/
+build/
+.vite/
+
+# local-only assets / secrets
+.yumeFriend-public.json
+.env
+*.key
+secrets.*
+*.apk
+*.exe
+frontend/public/live2dcubismcore.min.js
+
+# editor / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

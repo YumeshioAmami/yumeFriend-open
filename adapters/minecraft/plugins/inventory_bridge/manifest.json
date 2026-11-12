@@ -1,0 +1,27 @@
+{
+  "id": "inventory_bridge",
+  "name": "背包交互桥（示例）",
+  "version": "1.0.0",
+  "api_version": 1,
+  "requires_mod": null,
+  "actions": {
+    "inventory_summary": {
+      "description": "读取背包、手持物和空格子数量",
+      "effect": "read",
+      "params": {}
+    },
+    "drop_item": {
+      "description": "从背包丢出一个物品",
+      "effect": "write",
+      "params": {
+        "item": "string",
+        "count": "number"
+      }
+    },
+    "use_held_item": {
+      "description": "使用 / 右键手上的物品并结束交互",
+      "effect": "interact",
+      "params": {}
+    }
+  }
+}

@@ -1,0 +1,28 @@
+Vivi / AvatarSample_E
+=====================
+
+License: CC0-1.0 (public domain dedication)
+License URL: https://creativecommons.org/publicdomain/zero/1.0/
+
+Author: VRoid Project (pixiv Inc.)
+Upstream: https://hub.vroid.com/en/characters/945152946522067123/models/1622417912888236740
+Mirror used for the file in this repository:
+https://github.com/madjin/vrm-samples/raw/e16eb187100149a315ad92c3c9968f1d5baa6c7d/vroid/beta/Vivi.vrm
+
+Embedded VRM 0.x metadata:
+  title: Vivi
+  licenseName: CC0
+  allowedUserName: Everyone
+  commercialUssageName: Allow
+  sexualUssageName: Allow
+  violentUssageName: Allow
+
+SHA-256:
+  eaf902e041a7a810f1423599ae75682f61184ab6ef0206da9a8ed9caa8ec3a9d
+
+Notes:
+- This is the default 3D avatar for all yumeFriend friends.
+- The file is redistributed here under CC0-1.0.
+- pixiv's FAQ lists AvatarSample_E (the former beta model "Vivi") among the
+  CC0-licensed VRoid sample models:
+  https://vroid.pixiv.help/hc/en-us/articles/4402614652569

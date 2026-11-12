@@ -1,0 +1,17 @@
+First-person hand derived from Vivi / AvatarSample_E
+====================================================
+
+Source model: frontend/public/models/Vivi.vrm
+Author: VRoid Project (pixiv Inc.)
+License: CC0-1.0 (public domain dedication)
+License URL: https://creativecommons.org/publicdomain/zero/1.0/
+Upstream:
+https://hub.vroid.com/en/characters/945152946522067123/models/1622417912888236740
+
+Modifications for yumeFriend:
+- Extracted the right hand and a short section of the right forearm from the
+  Body mesh (skin material only).
+- Posed the fingers into a slight relaxed curl and baked the pose.
+- Re-oriented, normalized, and exported only that hand section as GLB.
+
+The derived hand asset is distributed under the same CC0-1.0 dedication.
