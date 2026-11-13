@@ -98,7 +98,7 @@ HOST = (
 PORT = int(os.environ.get("YF_PORT", "8001"))
 
 APP_NAME = "yumeFriend"
-APP_VERSION = "7.28.0"  # v7.28.0 Live2D 运行时下载 + Minecraft 多版本数据包
+APP_VERSION = "7.28.1"  # v7.28.1 手机端旧数据库升级兼容
 
 # D456：桌面自动更新。发布清单和资源页都在 yumeBlog。
 UPDATE_MANIFEST_URL = (

@@ -19,6 +19,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
+from sqlalchemy import Boolean, Float, Integer, Numeric, String, Text, inspect
+from sqlalchemy.engine import Engine
 
 from backend.api import documents as documents_api
 from backend.api import embedding as embedding_api
@@ -41,6 +43,79 @@ from backend.llm.errors import LLMConfigError
 from backend.mobile_logging import configure as configure_mobile_logging
 from backend.services.errors import ServiceError
 from backend.services import server_sync, sync_service
+
+
+def _quote_ident(name: str) -> str:
+    return '"' + name.replace('"', '""') + '"'
+
+
+def _column_default_sql(column) -> str | None:  # noqa: ANN001
+    """给旧库补列时生成一个安全的 SQLite 默认值。"""
+    default = getattr(getattr(column, "server_default", None), "arg", None)
+    if default is None:
+        default = getattr(getattr(column, "default", None), "arg", None)
+    if default is not None and not callable(default):
+        if isinstance(default, str):
+            return "'" + default.replace("'", "''") + "'"
+        if isinstance(default, bool):
+            return "1" if default else "0"
+        return str(default)
+    if not column.nullable:
+        if isinstance(column.type, (String, Text)):
+            return "''"
+        if isinstance(column.type, (Boolean, Integer, Float, Numeric)):
+            return "0"
+    return None
+
+
+def _ensure_missing_columns(engine: Engine) -> None:
+    """补齐 APK 跨版本升级时新增的列。
+
+    手机端没有 Alembic；`create_all` 只建缺表，不会 ALTER 旧表。
+    这里按 ORM metadata 检查每张已有表，缺什么列就 `ADD COLUMN`。
+    这是 2026-11-14 手机端 HTTP 500 的根因修复：旧库缺
+    `friends.visual_mode` / `messages.segments` 等列，查询整行直接抛
+    `no such column`。
+    """
+    inspector = inspect(engine)
+    existing_tables = set(inspector.get_table_names())
+    added: list[str] = []
+    with engine.begin() as conn:
+        for table in Base.metadata.sorted_tables:
+            if table.name not in existing_tables:
+                continue
+            existing_columns = {
+                str(item["name"]) for item in inspector.get_columns(table.name)
+            }
+            for column in table.columns:
+                if column.name in existing_columns:
+                    continue
+                type_sql = column.type.compile(dialect=engine.dialect)
+                default_sql = _column_default_sql(column)
+                ddl = (
+                    f"ALTER TABLE {_quote_ident(table.name)} "
+                    f"ADD COLUMN {_quote_ident(column.name)} {type_sql}"
+                )
+                if default_sql is not None:
+                    ddl += f" DEFAULT {default_sql}"
+                try:
+                    conn.exec_driver_sql(ddl)
+                    added.append(f"{table.name}.{column.name}")
+                except Exception as exc:  # noqa: BLE001
+                    # 并发启动 / 重复迁移时可能已经被另一条连接补上。
+                    if "duplicate column name" not in str(exc).lower():
+                        raise
+        # 补列后把索引也补上；缺索引只影响性能，但顺手修掉。
+        for table in Base.metadata.sorted_tables:
+            if table.name not in existing_tables:
+                continue
+            for index in table.indexes:
+                try:
+                    index.create(bind=conn, checkfirst=True)
+                except Exception as exc:  # noqa: BLE001
+                    logger.warning("手机端补索引失败（{}）：{}", index.name, exc)
+    if added:
+        logger.info("手机数据库已补齐 {} 个缺失列：{}", len(added), ", ".join(added))
 
 
 def _create_tables() -> None:
@@ -98,6 +173,8 @@ def _create_tables() -> None:
         }
         if activity_cols and "project_id" not in activity_cols:
             conn.exec_driver_sql("ALTER TABLE life_activities ADD COLUMN project_id VARCHAR")
+    # 兼容所有历史版本：以后再加字段也不需要重新手写一遍 ALTER。
+    _ensure_missing_columns(engine)
 
 
 @asynccontextmanager
